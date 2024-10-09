@@ -1,0 +1,124 @@
+### **Solution Report: Regularized Regression Task**
+
+#### **Problem Understanding**
+
+The goal of this task was to calculate the parameters of a polynomial model function \( f(x) \) using Ordinary Least Squares (OLS) and Ridge-regularized regression. The provided information indicated two potential model structures based on the value of a parameter \( \xi_{15} \):
+
+- **If \( \xi_{15} = 0 \)**: The polynomial model has twelve parameters (\( \alpha_0, \alpha_1, \dots, \alpha_{12} \)).
+  
+  \[
+  f(x) = \alpha_0 + \alpha_1 x + \alpha_2 x^2 + \dots + \alpha_{12} x^{12}
+  \]
+
+- **If \( \xi_{15} = 2 \)**: The polynomial model has ten parameters (\( \alpha_0, \alpha_1, \dots, \alpha_{10} \)).
+
+  \[
+  f(x) = \alpha_0 + \alpha_1 x + \alpha_2 x^2 + \dots + \alpha_{10} x^{10}
+  \]
+
+We were tasked with calculating the OLS estimates and Ridge-regularized estimates for the parameters using the sample points \( (x, y) \) provided in \( \xi_{16} \).
+
+#### **Step-by-Step Solution Approach**
+
+The task was broken down into several key steps:
+
+### 1. **Model Selection**
+Based on the fact that \( \xi_{15} = 2 \), we selected a polynomial model with 10 parameters:
+
+\[
+f(x) = \alpha_0 + \alpha_1 x + \alpha_2 x^2 + \dots + \alpha_{10} x^{10}
+\]
+
+### 2. **Data Preparation**
+
+The data points from \( \xi_{16} \) were provided as a series of \( (x, y) \) pairs, representing the values of an unknown function \( f \) at specific points. These data points were extracted and separated into two arrays: \( X \) for the independent variable (predictor \( x \)) and \( y \) for the dependent variable (target \( y \)).
+
+### 3. **Feature Engineering**
+
+To create the necessary polynomial features for the regression model, we used the `PolynomialFeatures` tool to generate polynomial terms up to degree 10 (since \( \xi_{15} = 2 \)):
+
+\[
+X_{\text{poly}} = \text{poly_features.fit_transform}(X)
+\]
+
+This created a matrix where each row corresponds to the polynomial expansion of the input \( x \) value.
+
+### 4. **Ordinary Least Squares (OLS) Regression**
+
+Using the generated polynomial features, we applied OLS regression to calculate the best-fitting parameters \( \alpha \). OLS minimizes the sum of squared residuals between the observed \( y \) values and the predicted values from the model.
+
+- The OLS model was fitted using scikit-learn's `LinearRegression` class. This provided the optimal values for the parameters \( \alpha_0, \alpha_1, \dots, \alpha_{10} \).
+
+- After fitting the model, the **Mean Squared Error (MSE)** was calculated to assess how well the model fit the training data.
+
+### 5. **Ridge Regression (Regularization)**
+
+Ridge regression was then applied to introduce regularization, which penalizes large coefficient values to prevent overfitting, especially with high-degree polynomial models. We tested various values for the regularization parameter \( \lambda \), ranging from very small to large, using the `Ridge` class from scikit-learn:
+
+\[
+\alpha_{\text{ridge}} = \arg \min_\alpha \left( \| y - X_{\text{poly}} \alpha \|^2 + \lambda \| \alpha \|^2 \right)
+\]
+
+This was done for different \( \lambda \) values (e.g., \( 10^{-10}, 10^{-5}, 0.01, 1, 10, 100, \dots \)) to understand how the degree of regularization affected the model’s performance.
+
+For each model, the MSE was calculated to compare the performance of Ridge regression with different regularization strengths to the OLS model.
+
+### 6. **Visualization**
+
+Two main visualizations were generated to help interpret the results:
+
+1. **Polynomial Regression Fits Plot:** This plot shows the actual data points, the OLS model fit, and several Ridge model fits for different values of \( \lambda \). The comparison across these models helped visualize how the regularization affects the curve-fitting process and smooths the model as \( \lambda \) increases.
+   
+2. **Bar Chart of MSE Comparison:** A bar chart was created to directly compare the Mean Squared Errors (MSE) of the different models, including the OLS and Ridge regressions with various \( \lambda \) values. This helped quantify the differences in model performance and see the impact of different regularization strengths.
+
+### 7. **Rationale Behind the Weights Given to the Penalties in the Ridge Model**
+
+The choice of regularization parameter \( \lambda \) (also called the penalty weight) is critical in Ridge regression, as it controls the balance between fitting the data closely and preventing overfitting. The following logic guided the selection of \( \lambda \) values:
+
+- **Small \( \lambda \) values** (e.g., \( 10^{-10}, 10^{-5}, 0.01 \)) were tested to simulate minimal regularization, allowing the Ridge model to behave almost like OLS. These small values helped evaluate whether introducing a slight penalty on the model coefficients would still capture the flexibility of the polynomial while guarding against extreme overfitting.
+  
+- **Moderate \( \lambda \) values** (e.g., \( \lambda = 0.01, 1 \)) were introduced to balance the trade-off between model complexity and regularization. The goal was to slightly penalize large coefficients for higher-degree terms, thus simplifying the model and reducing overfitting tendencies.
+  
+- **Larger \( \lambda \) values** (e.g., \( 10, 100, 1000, \dots \)) were used to observe how aggressively regularization affects the model. As \( \lambda \) grows, the coefficients shrink dramatically, and the model becomes more linear, ultimately leading to underfitting if \( \lambda \) is too large.
+
+The rationale for this range of \( \lambda \) values was to explore the full spectrum of model behavior—from minimal regularization (to mimic OLS) to very strong regularization (to prevent overfitting but risking underfitting).
+
+### 8. **Results and Interpretation**
+
+#### OLS vs Ridge Regression:
+
+- **OLS Model:**
+  - The OLS model provided the best fit to the training data, with a MSE of \( 2.38 \times 10^{21} \).
+  - The coefficients were calculated as expected, but given the complexity of the 10-degree polynomial, the model might suffer from overfitting, making it less generalizable to new data.
+
+- **Ridge with Small \( \lambda \):**
+  - For very small values of \( \lambda \) (e.g., \( 10^{-10}, 10^{-5} \)), Ridge regression performed nearly identically to OLS. The model coefficients were only slightly penalized, and the MSE remained very close to that of the OLS model.
+  - This suggests that minimal regularization was not enough to meaningfully change the model, but it did not degrade performance either.
+
+- **Ridge with Moderate \( \lambda \):**
+  - As \( \lambda \) increased to more moderate levels (e.g., \( \lambda = 0.01, 1 \)), the regularization effect became noticeable. Higher-degree terms were penalized more, leading to smaller coefficients for terms like \( x^9 \) and \( x^{10} \), reducing the risk of overfitting.
+  - The MSE remained close to OLS, but the model was simplified. This balance of complexity and performance makes Ridge with moderate \( \lambda \) values a strong candidate for generalization on new data.
+
+- **Ridge with Large \( \lambda \):**
+  - When \( \lambda \) grew larger (e.g., \( 10, 100, 1000 \)), the MSE started to increase significantly, indicating that the regularization was too strong. The higher-degree terms were heavily penalized, shrinking the model towards a linear form, which underfit the data.
+  - These models failed to capture the necessary complexity of the polynomial relationships present in the data, leading to poor performance.
+
+#### **Model Qualities and Trade-offs:**
+
+1. **OLS Model:**
+   - **Strengths:** Provides the closest fit to the training data by minimizing the residuals. It fully captures the flexibility of a 10th-degree polynomial, making it highly accurate on the given data.
+   - **Weaknesses:** OLS does not penalize large coefficients, so it can easily overfit, especially when dealing with high-degree polynomials. This makes it potentially poor at generalizing to unseen data.
+
+2. **Ridge with Small \( \lambda \):**
+   - **Strengths:** Retains much of the flexibility of the OLS model while introducing minimal regularization. It can be a better alternative to OLS if you expect some noise in the data but still need a complex model.
+   - **Weaknesses:** Small regularization does not sufficiently reduce the risk of overfitting, so this model might still perform similarly to OLS on unseen data.
+
+3. **Ridge with Moderate \( \lambda \):**
+   - **Strengths:** This solution strikes a good balance between model complexity and regularization. The moderate \( \lambda \) values penalize large coefficients enough to reduce overfitting while still capturing the data's complexity. This makes it a strong candidate for generalization, particularly when you want to avoid overfitting without significantly increasing error.
+   - **Weaknesses:** While moderate \( \lambda \) values reduce overfitting, they may still slightly underfit the data if not chosen carefully. The trade-off lies in sacrificing some of the model’s flexibility to gain robustness against noise and overfitting.
+
+4. **Ridge with Large \( \lambda \):**
+   - **Strengths:** As \( \lambda \) increases, Ridge becomes more stable and robust to overfitting, making it suitable for very noisy datasets where simpler models might be preferred. It strongly penalizes the higher-order terms, leading to a more linear (and hence simpler) model.
+   - **Weaknesses:** When \( \lambda \) is too large, the model severely underfits the data. The high MSE values for larger \( \lambda \) values show that the model is unable to capture the non-linear relationships in the data. This makes the model too simplistic, failing to adequately explain the variance in the data.
+
+

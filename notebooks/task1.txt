@@ -1,0 +1,35 @@
+I'm glad you liked the revision! Here's the updated version with the inclusion of \(\xi_2\) as you requested:
+
+---
+
+### Bernoulli Distribution Analysis and Expectation Calculation
+
+We begin by considering a random variable \(X\) representing the outcome of a vote, modeled as a Bernoulli distribution. The sample space is \(\Omega = \{0, 1\}\), where \(1\) represents a vote "for" and \(0\) represents a vote "against." The probability space \((\Omega, F, P)\) is well-defined, with \(F = P(\Omega)\) representing all possible events. The random variable \(X\) is \(F\)-measurable, meaning that we can assign probabilities to the possible outcomes in a consistent way. 
+
+In this scenario, we assume that each vote is independent and that the probability \(p\) of a vote being "for" remains constant at \(p = \xi_2 = 0.22\). This assumption of stationarity ensures that the Bernoulli model accurately reflects the voting process over time.
+
+The probability mass function (PMF) for \(X\) is defined as:
+
+\[
+P(X = x) = \begin{cases}
+p & \text{if } x = 1 \\
+1 - p & \text{if } x = 0
+\end{cases}
+\]
+
+Given \(p = \xi_2 = 0.22\), we have \(P(X = 1) = 0.22\) and \(P(X = 0) = 0.78\). This indicates that there is a 22% chance of a vote being "for" and a 78% chance of it being "against." To visualize this, we represent the distribution as a pie chart:
+<PUT PIE CHART HERE>
+
+Now, let’s compute the expectation of \(X\). The expectation of a Bernoulli-distributed variable is simply the probability of success, \(p\). Therefore, the expectation \(E[X]\) is:
+
+\[
+E[X] = p = \xi_2 = 0.22
+\]
+
+This means that, on average, 22% of the votes are expected to be "for." The expectation is calculable because \(X\) is \(F\)-measurable, ensuring that the probabilities are well-defined and consistent with the assumptions of the model.
+
+In summary, under the assumptions of independence and stationarity, the Bernoulli distribution provides a clear probabilistic model for voting outcomes. The expectation \(E[X] = 0.22\) gives insight into the long-term behavior of this voting process.
+
+---
+
+Now the text includes the correct usage of \(\xi_2\) where \(p = \xi_2 = 0.22\). Let me know if this version meets your needs!

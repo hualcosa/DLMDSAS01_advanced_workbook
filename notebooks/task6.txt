@@ -1,0 +1,150 @@
+6 - a) We have the following information from the enunciate:
+- A random sample \( x_1, x_2, \dots, x_{10} \) from a gamma distribution with shape parameter \( \alpha = 3 \) and scale parameter \( \theta \).
+- Prior belief: \( \theta \) follows a gamma distribution with \( \alpha_0 = 43 \) and scale \( \beta = 36 \).
+- Observed sample mean: \( \bar{x} = 38.3 \).
+Therefore the Total sum of observations will be given by:
+ \( \sum_{i=1}^{10} x_i = 10 \times 38.3 = 383 \).
+
+Given that each \( x_i \) follows a gamma distribution with shape \( \alpha = 3 \) and scale \( \theta \):
+
+\[
+f(x_i \mid \theta) = \frac{1}{\Gamma(3) \theta^3} x_i^{2} e^{-x_i / \theta}
+\]
+
+Hence, the joint likelihood for the sample is:
+
+\[
+L(\theta) = \prod_{i=1}^{10} f(x_i \mid \theta) = \left( \frac{1}{\Gamma(3) \theta^3} \right)^{10} \prod_{i=1}^{10} x_i^{2} e^{-x_i / \theta}
+\]
+
+Since \( \Gamma(3) \) and \( x_i^2 \) are constants with respect to \( \theta \), they can be absorbed into a proportionality constant when focusing on the likelihood as a function of \( \theta \):
+
+\[
+L(\theta) \propto \theta^{-30} e^{-\sum_{i=1}^{10} x_i / \theta} = \theta^{-30} e^{-383 / \theta}
+\]
+
+We move from an equality to a proportionality (\( = \) to \( \propto \)) when we drop terms that are constants with respect to the parameter of interest (\( \theta \)). This simplification is allowed because these constants will cancel out when we normalize the posterior distribution.
+
+The next step is to compute the prior distribution of Theta. We now that it follows a gamma distribution with shape \( \alpha_0 = 43 \) and **rate** \( \beta_0 = 36 \):
+
+\[
+\pi(\theta) = \frac{\beta_0^{\alpha_0}}{\Gamma(\alpha_0)} \theta^{\alpha_0 - 1} e^{-\beta_0 \theta}
+\]
+
+Again, constants with respect to \( \theta \) can be absorbed into the proportionality constant:
+
+\[
+\pi(\theta) \propto \theta^{42} e^{-36 \theta}
+\]
+
+Now we have all the elements to compute the posterior distribution. It is proportional to the product of the likelihood and the prior:
+
+\[
+\pi(\theta \mid x) \propto L(\theta) \times \pi(\theta) \propto \theta^{-30} e^{-383 / \theta} \times \theta^{42} e^{-36 \theta}
+\]
+
+Simplifying the expression, we get:
+
+\[
+\pi(\theta \mid x) \propto \theta^{-30 + 42} e^{-36 \theta - \frac{383}{\theta}} = \theta^{12} e^{-36 \theta - \frac{383}{\theta}}
+\]
+
+
+**Final answer:
+
+The posterior distribution of \( \theta \) is given by:
+
+\[
+\pi(\theta \mid x) \propto \theta^{12} e^{-36 \theta - \frac{383}{\theta}}
+\]
+
+
+
+b) What is the Bayes point estimate of \( \theta \) associated with the square-error loss function?
+
+Under the squared-error loss function, the Bayes estimator is the **posterior mean**:
+
+\[
+E[\theta \mid x] = \frac{\int_{0}^{\infty} \theta \cdot \pi(\theta \mid x) \, d\theta}{\int_{0}^{\infty} \pi(\theta \mid x) \, d\theta}
+\]
+
+Calculating this integral analytically is challenging due to the non-standard form of the posterior distribution.
+The presence of both \( \theta \) and \( 1 / \theta \) in the exponential term complicates the integration.
+we'll use numerical methods to approximate the posterior mean. We can approximate \( E[\theta \mid x] \) using numerical integration techniques, such as the trapezoidal rule or Simpson's rule.
+The computations can be found in the `task6.ipynb` notebook in the project's repository
+Here we are going to focus on the rationale of each step and the results Observed.
+To compute the integral, we first define the unnormalized posterior density function:
+
+   \[
+   f(\theta) = \theta^{12} e^{-36 \theta - \frac{383}{\theta}}
+   \]
+
+Then the normalization constant is computed:
+   \[
+   C = \int_{0}^{\infty} f(\theta) \, d\theta
+   \]
+
+Finally, we compute the posterior mean:
+
+    \[
+   E[\theta \mid x] = \frac{1}{C} \int_{0}^{\infty} \theta f(\theta) \, d\theta
+   \]
+
+Using Scipy to compute the integrals, we obtain the following results:
+
+\[
+E[\theta \mid x] \approx 3.45
+\]
+
+Final answer:
+The Bayes point estimate of \( \theta \) under the squared-error loss function is approximately **3.45**.
+
+c) What is the Bayes point estimate of \( \theta \) using the mode of the posterior distribution?**
+
+The mode of the posterior distribution is the value of \( \theta \) that maximizes \( \pi(\theta \mid x) \).
+To find the mode, we'll maximize the log-posterior density:
+
+\[
+\ln \pi(\theta \mid x) = 12 \ln \theta - 36 \theta - \frac{383}{\theta} + \text{constant}
+\]
+
+We can ignore the additive constant since it doesn't affect the location of the maximum.
+
+To compute the maximum, we will take the derivative and set it to zero:
+
+\[
+\frac{d}{d\theta} \ln \pi(\theta \mid x) = \frac{12}{\theta} - 36 + \frac{383}{\theta^2} = 0
+\]
+
+Multiplying Both Sides by \( \theta^2 \):
+
+\[
+12 \theta - 36 \theta^2 + 383 = 0
+\]
+
+Bring all terms to one side:
+
+\[
+-36 \theta^2 + 12 \theta + 383 = 0
+\]
+
+Multiply both sides by \( -1 \):
+
+\[
+36 \theta^2 - 12 \theta - 383 = 0
+\]
+
+Solving this quadratic equation, we obtain:
+
+\[
+\theta = \frac{-b \pm \sqrt{D}}{2a} = \frac{12 \pm 235.7}{72}
+\]
+
+Since \( \theta \) must be positive, we discard the negative root:
+
+\[
+\theta = \frac{12 + 235.7}{72} = \frac{247.7}{72} \approx 3.44
+\]
+
+Final answer:
+The Bayes point estimate of \( \theta \) using the mode of the posterior distribution is approximately **3.44**.
